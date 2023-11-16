@@ -1,0 +1,23 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<div class="col-xs-12 col-md-6">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+             <i class="glyphicon glyphicon-stats"></i> 
+                Estatísticas
+        </div>
+        <div class="panel-body">
+            <ul>
+            <li> <a href="{% url "stats@elections" %}">Eleições</a></li>
+            <li> <a href="{% url "stats@recent-votes" %}">Votos Recentes</a></li>
+            <li> <a href="{% url "stats@elections-problems" %}">Eleições Problemáticas Recentes</a></li>
+            </ul>
+            <br>
+            <p><b>{{num_votes_in_queue}}</b> votos na fila. {% if num_votes_in_queue %}[<a href="{% url "stats@force-queue" %}">Forçar</a>]{% endif %}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

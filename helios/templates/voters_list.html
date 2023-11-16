@@ -1,0 +1,270 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Centro de Rastreamento de Cédulas e Eleitores{% endblock %}
+{% block content %}
+
+<div class="row">
+	<div class="col-xs-12 col-md-12"> 
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="glyphicon glyphicon-cog"></i>
+				Centro de Rastreamento de Cédulas e Eleitores 
+			</div>
+			<div class="panel-body">
+				
+
+				{% if admin_p and not election.frozen_at %}
+				{% if election.private_p %}
+					<em>Sua eleição está marcada como privada, o que significa que você não pode abrir registro mais amplo </em>.
+				{% else %}	
+				<br>
+				Você pode alterar esta configuração para a eleição <b>{{ election.name }}</b>. <br><br>
+				<li>A opção <em>Qualquer eleitor que possa se conectar no sistema</em> permite que qualquer usuário com acesso participe da votação;</li>
+				<li>A opção <em>Somente eleitores contidos no arquivo a ser carregado </em> permite que apenas usuário com acesso e presente na lista participe da votação.</li>
+				<br>
+			
+				<!-- who can vote info -->				
+				
+				<br>
+				<!-- end who can vote info -->			
+				<div class="col-xs-2 col-md-2"></div>	
+					<div class="col-xs-8 col-md-8">						
+						<div class="panel well" >
+							<div class="panel-body">
+								<form method="post" role="form" class="form-horizontal"
+									action="{% url "election@voters@eligibility" election.uuid %}">
+									<input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+									<div class="form-group">
+										<input type="radio" name="eligibility" value="openreg"
+											{% if election.openreg and not election.eligibility %}CHECKED{% endif %} />
+										Qualquer eleitor que possa se conectar no sistema
+									</div>
+									<div class="form-group">
+										<input type="radio" name="eligibility" value="closedreg"
+											{% if not election.openreg %}CHECKED{% endif %} />
+										Somente eleitores contidos no arquivo a ser carregado (arquivo CSV)
+										<i title="Não se esqueça de carregar o arquivo de eleitores, clicando no botão carregar arquivo de eleitores." 
+											class="glyphicon glyphicon-info-sign"></i>
+									</div>
+									
+									
+									{% if categories %}
+									<div class="form-group">
+										<input type="radio" name="eligibility" value="limitedreg" 
+											{% if election.eligibility %}CHECKED{% endif %} />
+										    apenas eleitores que são membros de
+									</div>
+									<div class="form-group">
+										<select name="category_id">
+											{% for category in categories %}
+											<option value="{{category.id}}" {% if eligibility_category_id == category.id %}SELECTED{% endif %}> {{category.name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									{% endif %}
+									<div class="form-group">
+										<button class="btn btn-primary"> <i class="glyphicon glyphicon-refresh"></i>
+											Atualizar</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					
+					{% endif %}
+				{% endif %}
+
+				<br>	
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						{% if email_voters and election.frozen_at and admin_p %}
+						<a class="btn btn-primary" href="{% url "election@voters@email" election.uuid %}">
+							<i class="glyphicon glyphicon-envelope"></i> Enviar E-mail para Eleitores</a>
+						{% endif %}
+
+ 
+						{% if admin_p %}						
+						{% if upload_p and not election.openreg %}
+							
+						<a class="btn btn-primary"
+							href="{% url "election@voters@upload" election_uuid=election.uuid %}">
+							<i class="glyphicon glyphicon-upload"></i>
+							Carregar Arquivo de Eleitores</a>
+							<br /><br />
+						{% endif %}
+						{% endif %}
+						
+
+						{% if election.num_voters > 20 %}
+						<div class="alert alert-info">
+							<p>
+								{% if q %}
+							<p><em>Procurando por <u>{{q}}</u>.</em> [<a href="?">Limpar Busca</a>]
+							</p>
+							{% else %}
+							<form method="get" action="{% url "election@voters@list-pretty" election.uuid %}">
+								<b>
+									{% if not election.use_voter_aliases or admin_p %}
+									Nome do eleitor
+									{% else %}
+									Pseudônimo
+									{% endif %}
+								</b>: 
+								<input type="text" name="q" /> 
+								<input type="submit" value="Buscar" />
+							</form>
+							{% endif %}
+							</p>
+						</div>
+						{% endif %}
+
+						<!-- end search voter -->
+						{% if voters %}
+
+						
+
+						{% if voters_page.has_previous %}
+						<a href="{% url "election@voters@list-pretty" election.uuid %}?page={{voters_page.previous_page_number}}&limit={{limit}}&q={{q|urlencode}}">
+							Anterior {{limit}}</a> &nbsp;&nbsp;
+						{% endif %}
+						Eleitores {{voters_page.start_index}} - {{voters_page.end_index}} (de
+						{{total_voters}})&nbsp;&nbsp;
+
+						{% if voters_page.has_next %}
+						<a href="{% url "election@voters@list-pretty" election.uuid %}?page={{voters_page.next_page_number}}&limit={{limit}}&q={{q|urlencode}}">
+							Próximo	{{limit}}</a> &nbsp;&nbsp;
+						{% endif %}
+						<br>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr>
+									{% if admin_p %}
+									<th> Nome </th>
+									{% if election.use_voter_aliases %}
+									<th> Pseudônimo </th>
+									{% endif %}
+									<th> E-mail </th>
+									{% else %}
+									{% if election.use_voter_aliases %}
+									<th> Pseudônimo </th>
+									{% else %}
+									<th> Nome </th>
+									{% endif %}
+									{% endif %}
+									<th>Rastreador da Cédula</th>
+								</tr>
+								{% for voter in voters %}
+								<tr>
+									{% if admin_p %}
+									<td>
+										{% if email_voters and election.frozen_at %}
+										<a
+											href="{% url "election@voters@email" election.uuid %}"><i
+												title="Enviar email para esse eleitor. Essa ação só vai ser possível se você já tiver congelado a cédula de votação."
+												class="glyphicon glyphicon-envelope"></i></a>
+										{% endif %}
+										<a href="{% url "election@voter@delete" election.uuid voter.uuid %}"><i
+												data-name="{{voter.name}}" title="Remover Eleitor"
+												class="glyphicon glyphicon-remove remove_voter"></i></a>
+
+										<!--<img class="small-logo" src="/static/auth/login-icons/{{voter.voter_type}}.png" alt="{{voter.voter_type}}" />-->
+										{{voter.name}}</td>
+									{% if election.use_voter_aliases %}
+									<td>{{voter.alias}}</td>
+									{% endif %}
+									<td>{{voter.email}}</td>
+									<td><em>{% if voter.vote_hash %}{{voter.vote_hash}}{% else %}&mdash;{% endif %}</em>
+									</td>
+									{% else %}
+									{% if election.use_voter_aliases %}
+									<td>{{voter.alias}}</td>
+									{% else %}
+									<td>{{voter.name}}</td>
+									{% endif %}
+									<td><em>{% if voter.vote_hash %}{{voter.vote_hash}}{% else %}&mdash;{% endif %}</em>
+									</td>
+									{% endif %}
+									<!-- ifadmin -->
+								</tr>
+								{% endfor %}
+							</table>
+						</div>
+
+						<p>
+							<b>
+								{% if election.num_cast_votes %}
+								<b>Voto(s) depositado(s):</b> {{election.num_cast_votes}}
+								{% else %}
+								<b>Voto(s) depositado(s):</b> Nenhum Voto
+								{% endif %}
+							</b>
+						</p>						
+						
+						{% else %}
+						<br />
+						{% if not election.openreg %}
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr>
+									{% if admin_p %}
+									<th> Nome </th>
+									{% if election.use_voter_aliases %}
+									<th> Pseudônimo </th>
+									{% endif %}
+									<th> E-mail </th>
+									{% else %}
+									{% if election.use_voter_aliases %}
+									<th> Pseudônimo </th>
+									{% else %}
+									<th> Nome </th>
+									{% endif %}
+									{% endif %}
+									<th>Rastreador da Cédula</th>
+								</tr>
+								<tr>
+									<td><em> Nenhum Eleitor </em></td>									
+								</tr>
+							</table>
+						</div>
+						
+						{% endif %}
+						{% endif %}
+					</div>
+				</div>
+				<br>
+
+				{% if admin_p %}
+					{% if voter_files %}
+					Arquivo(s) de eleitores carregado(s) anteriormente
+					<ul>
+						{% for vf in voter_files %}
+						<li>
+							{% if vf.voter_file %}
+								{{vf.voter_file.size}}
+							{% else %}
+								{{vf.voter_file_content|length}}
+							{% endif %}
+								bytes, em {{vf.uploaded_at}}:
+
+							{% if vf.processing_finished_at %}
+								<em> Processamento completo {{vf.num_voters}} eleitor(es) carregado(s)</em>
+							{% else %}
+								{% if vf.processing_started_at %}
+									<em>Processando</em>
+								{% else %}
+									<em>Recarregue a página para exibir a lista de eleitores</em>
+								{% endif %}
+							{% endif %}
+						</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
+				{% endif %}
+				<br>
+				<div class="form-group">
+					<a class="btn btn-danger" href="{% url "election@view" election.uuid %}">Voltar	para Eleição</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

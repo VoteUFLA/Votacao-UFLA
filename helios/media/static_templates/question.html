@@ -1,0 +1,210 @@
+{#foreach $T.questions as question}
+<div id="q_view_{$T.question$index}">
+    <h4>
+        {$T.question$index + 1}.
+
+        {$T.question.question} (selecionar entre {$T.question.min} e {#if $T.question.max !=
+        null}{$T.question.max}{#else}ilimitado{#/if} respostas, tipo de resultado {$T.question.result_type}{#if
+        $T.question.randomize_answer_order},ordem aleatória nas respostas
+        {#/if}.)
+
+        {#if $T.admin_p}
+        {#if $T.question$index > 0}
+        <a href="javascript:question_move_up({$T.question$index});">
+            <i title="Mover questão para cima (reordenar)." class="glyphicon glyphicon-arrow-up"></i></a>&nbsp;
+
+        {#/if}
+
+        <a onclick="return confirm('Tem certeza de que deseja remover a questão?');"
+            href="javascript:question_remove({$T.question$index})"><i title="Remover Questão"
+                class="glyphicon glyphicon-remove"></i></a>
+        <a href="javascript:question_edit({$T.question$index})"><i title="Editar Questão"
+                class="glyphicon glyphicon-edit"></i></a>
+
+        {#/if}
+
+
+    </h4>
+    <ul>
+        {#foreach $T.question.answers as answer}
+        <li> {$T.answer}
+            {#if $T.question.answer_urls[$T.answer$index]}
+            [<a target="_new" href="{$T.question.answer_urls[$T.answer$index]}">mais</a>]
+            {#/if}
+        </li>
+        {#/for}
+    </ul>
+</div>
+<div id="q_edit_{$T.question$index}" style="display:none;" class="well">
+    <form id="question_edit_{$T.question$index}_form"
+        onsubmit="question_update({$T.question$index}, this); return false;" action="#">
+        <p>
+
+            <input type="hidden" name="choice_type" value="approval" />
+            <b>{$T.question$index + 1}.</b> &nbsp;O eleitor deve selecionar no mínimo &nbsp;
+            <select name="min">
+                <option selected>0</option>
+                {#for option_index = 1 to 20}
+                <option>{$T.option_index}</option>
+                {#/for}
+            </select>
+
+            &nbsp; e &nbsp;
+
+            <select name="max">
+                <option>0</option>
+                <option selected>1</option>
+                {#for option_index = 2 to 50}
+                <option>{$T.option_index}</option>
+                {#/for}
+                <option value="">ilimitado</option>
+            </select>
+
+            &nbsp;
+            resposta(s).
+
+            &nbsp;<b>|</b>
+            &nbsp;
+            Tipo de Resultado:&nbsp;
+            <select name="result_type">
+                <option selected>absolute</option>
+                <option>relative</option>
+            </select>
+
+            &nbsp;<b>|</b>
+            &nbsp;
+            Ordem aléatória das respostas:&nbsp;
+            <select name="randomize_answer_order">
+                <option selected value="0">Não</option>
+                <option value="1">Sim</option>
+            </select>
+        </p>
+
+        <table id="answer_table_{$T.question$index}" style="width:100%;">
+            <tbody>
+                <tr>
+                    <th colspan="2">Questão:</th>
+                    <td><input type="text" name="question" size="70" /></td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2"></th>
+                    <th><a href="javascript:add_answers($('#answer_table_{$T.question$index}'),5)">adicionar mais 5 respostas</a>
+                        <i title="Se precisar mais campos de resposta. Não vai ser necessário preencher todos."
+                            class="glyphicon glyphicon-question-sign"></i>
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <button type="submit" class="btn btn-primary">atualizar questão </button>
+                        <button type="reset" class="btn btn-danger"
+                            onclick="question_edit_cancel({$T.question$index});">cancelar</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+{#else}
+<div class="row">
+    <div class="alert alert-info " >
+        <span>Adicione uma ou mais questões na eleição <b>{{election.name}}.</b> </span>
+    </div>
+</div>
+    
+
+{#/for}
+
+{#if $T.admin_p}
+<div style=" padding: 0px 10px 10px 10px; border: 1px solid #ddd;">
+    <h4>
+        <a onclick="$('#addQuestion').slideToggle(250);" href="#">
+            <i class="glyphicon glyphicon-plus"></i>
+            Adicionar Questão
+        </a>
+    </h4>
+    <div id="addQuestion" style="display:none;">
+        <form id="question_form" onsubmit="question_add(this); return false;" action="#">
+            <p>
+
+                <input type="hidden" name="choice_type" value="approval" />
+                &nbsp;&nbsp; O eleitor deve selecionar no mínimo &nbsp;
+                <select name="min">
+                    <option selected>0</option>
+                    {#for option_index = 1 to 20}
+                    <option>{$T.option_index}</option>
+                    {#/for}
+                </select>
+
+                &nbsp; e &nbsp;
+
+                <select name="max">
+                    <option>0</option>
+                    <option selected>1</option>
+                    {#for option_index = 2 to 50}
+                    <option>{$T.option_index}</option>
+                    {#/for}
+                    <option value="">ilimitado</option>
+                </select>
+
+                &nbsp;
+                resposta(s).
+
+                &nbsp; <b>|</b>
+                &nbsp;
+                Tipo de Resultado:&nbsp;
+                <select name="result_type">
+                    <option selected>absolute</option>
+                    <option>relative</option>
+                </select>
+
+                &nbsp;<b>|</b>
+                &nbsp;
+                Ordem aleatória das respostas:&nbsp;
+                <select name="randomize_answer_order">
+                    <option selected value="0">Não</option>
+                    <option value="1">Sim</option>
+                </select>
+            </p>
+
+            </p>
+
+            <table id="answer_table" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <th colspan="2">Questão:</th>
+                        <td>
+                            <input type="text" name="question" size="70" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2"></th>
+                        <th>
+                            <a href="javascript:add_answers($('#answer_table'), 5)">adicionar mais 5 respostas</a>
+                            <i title="Se precisar mais campos de resposta. Não vai ser necessário preencher todos."
+                                class="glyphicon glyphicon-question-sign">
+                            </i>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><button type="submit" class="btn btn-primary">adicionar questão</button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            {#/if}
+        </form>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+{% extends "helios/templates/cryptobase.html" %}
+{% block content %}
+
+<div class="row">
+	<div class="col-xs-5 col-md-5">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="glyphicon glyphicon glyphicon-user"></i>
+				Adicionar Novo Apurador
+			</div>
+			<div class="panel-body">
+				<br>
+				Para adicionar um novo apurador na eleição <b>{{election.name}}</b>, insira o nome e e-mail institucional do usuário.
+				<br>
+				<br>
+				<form method="post" action="" role="form" class="form-horizontal">
+					<input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+					<div class="form-group">
+						<label for="name">Nome:</label>
+						<input type="text" name="name" size="57" />
+					</div>
+					<div class="form-group">
+						<label for="email">E-mail:</label>
+						<input type="email" name="email" size="57"/>
+					</div>
+					<div class="form-group">
+						<button class="btn btn-primary">Adicionar Apurador</button>
+						<a class="btn btn-danger" href="{% url "election@trustees@view" election.uuid %}">Cancelar</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

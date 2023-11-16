@@ -1,0 +1,81 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Cédulas Auditadas para {{election.name}}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-8 col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-calendar"></i>
+        Cédulas Auditadas 
+
+      </div>
+      <div class="panel-body">
+        
+        <br>        
+        <p style="text-align: justify;">         
+          
+          Quando você prepara uma cédula, recebe um rastreador para posteriormente verificar se sua cédula
+          foi contabilizada. Antes de depositar a cédula na urna, você pode solicitar ao sistema que abra a
+          cédula cifrada e verifique se a mesma foi cifrada corretamente (se realmente contém o seu voto). Depois disso,
+          você pode postar essa cédula aberta na lista de cédulas auditadas, para que qualquer um possa verificar (sua
+          identidade não será incluída). Você pode fazer isso quantas vezes quiser. Escolhendo ou não postar essa cédula
+          auditada, você deve voltar para a cédula de votação e a cifrar novamente, obtendo então um novo rastreador.
+          Isso ajuda a reduzir as chances de que alguém possa coagi-lo a votar de modo diverso à sua real escolha.
+          Essas cédulas não estão depositadas na urna, portanto não serão contabilizadas. Elas estão aqui apenas com o
+          propósito de auditoria, para verificar que o sistema de votação está cifrando corretamente as escolhas do
+          eleitor.
+        </p>
+        <p>
+
+          Para verificar uma cédula auditada, copie todo o seu conteúdo e cole-o no
+          <a target="_new"
+          href="/booth/single-ballot-verify.html?election_url={% url "election@home" election.uuid %}">Verificador de uma única cédula</a>.
+
+        </p>
+
+        {% if audited_ballots %}
+        <p>
+          Cédulas Auditadas {{offset_plus_one}} - {{offset_plus_limit}} &nbsp;&nbsp;
+        </p>
+
+        {% if next_after %}
+        <a href="?after={{next_after}}&offset={{offset_plus_limit}}">Próximo {{limit}}</a> &nbsp;&nbsp;
+        {% endif %}
+
+        {% ifequal offset 0 %}
+        {% else %}
+        <a href="?">back to start</a> &nbsp;&nbsp;
+        {% endifequal %}
+        {% if more_p %}
+        <a href="?after={{next_after}}&offset={{next_offset}}">Próximo {{limit}}</a>
+        {% endif %}
+        <table  class="table table-striped">
+          <thead>
+            <tr>
+              <th>Hash</th>
+              <th>Visualizar</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for b in audited_ballots %}
+          <tr>
+            <td>{{b.vote_hash}}</td> 
+            <td><a class="glyphicon glyphicon-eye-open" target="_blank" href="?vote_hash={{b.vote_hash|urlencode}}"></a></td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <em>nenhuma cédula auditada ainda
+         <br> 
+        {% endif %}
+        <br>
+        <div class="form-group">       
+          <a class="btn btn-danger"  href="{% url "election@view" election_uuid=election.uuid %}">Voltar para Eleição</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

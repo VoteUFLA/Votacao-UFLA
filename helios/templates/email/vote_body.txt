@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-br">
+<title>{{default_from_name|safe|linebreaksbr}}</title>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+
+<p>Caro (a) <strong>{{voter.name}}</strong>,
+<br>
+<p>{{custom_message|safe|linebreaksbr}}</p>
+<p>
+ <strong>URL da Eleição:</strong> <a href="{{election_vote_url}}"> {{ election_vote_url }} </a><br>
+ <strong>Código de Identificação da Eleição: </strong>  {{voter.election.hash}} <br>
+</p>
+
+
+
+{% ifequal voter.voter_type "password" %}
+  
+  <p>
+    <strong>Seu ID de eleitor</strong>: {{voter.voter_login_id}}<br>
+    <strong>Sua senha para essa eleição</strong>: {{voter.voter_password}}<br><br>
+  </p>
+
+{% else %}
+  
+  <p>
+    Para votar, conecte-se com seu usuário institucional! 
+  </p>
+
+{% endifequal %}
+
+
+{% if voter.vote_hash %}
+<br>
+<p>
+  <strong>O seu voto foi registrado com o seguinte código de identificação:</strong> {{voter.vote_hash}}
+</p>
+<br><br>
+{% endif %}
+
+{% if election.use_voter_aliases %}
+<p>
+Para proteger a sua privacidade, essa eleição está configurada para utilizar um pseudônimo de eleitor, assim seu login, nome ou email não serão mostrados para o público em geral. Portanto, ao invés de seu nome, o centro de rastreamento de cédula vai listar apenas o seu pseudônimo.
+<br><br>
+  <b>Seu pseudônimo de eleitor:</b> <strong>{{voter.alias}}</strong>.<br><br>
+<b>IMPORTANTE:</b> quando você for solicitado a informar seu login para votar, informe seu *ID de eleitor* ao invés de seu pseudônimo.
+</p>
+{% endif %}
+
+<p>Você pode depositar quantos votos quiser, apenas o último voto será contabilizado.</p>
+
+--
+<br>
+<font style="" size="2" face="verdana, sans-serif"><b style="">Universidade Federal de Lavras - UFLA</b></font><br>
+<font style="" size="2" face="verdana, sans-serif">Lavras, Minas Gerais - Cep: 37200-900 </font><br>
+<u><a href="https://ufla.br" target="_blank" style=""><font style="" size="2" face="verdana, sans-serif">https://ufla.br/</font></a></u>
+
+</body>
+</html>

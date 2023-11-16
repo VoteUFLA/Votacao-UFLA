@@ -1,0 +1,117 @@
+{% extends 'server_ui/templates/base.html' %}
+{% block title %}{{ settings.SITE_TITLE }}{% endblock %}
+
+{% block header %}
+<h2>{{ settings.SITE_TITLE }}</h2>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-md-8">
+  {% if settings.MASTER_HELIOS %}
+  {% if create_p %}
+
+    <a class="button" href="{% url "elections@new" %}">Criar Eleição</a>
+
+  {% endif %}
+  {% else %}
+  <div class="panel panel-info">
+    <div class="panel-body">
+      <p style="font-size: 1.4em;">
+        {{settings.WELCOME_MESSAGE|safe}}       
+      </p>
+
+      {% if elections|length %}
+      <p style="font-size: 1.4em;">
+        <!--  {{settings.WELCOME_MESSAGE|safe}} -->
+        Eleições:
+      </p>
+      {% for election in elections %}
+      <div class="panel well">
+        <div class="panel-body">
+          <a style="font-size: 1.4em;"
+           href="{% url "shortcut@election" election.short_name %}">{{election.name}}</a>
+          {% if settings.SHOW_USER_INFO %}<br />
+          by <b>{{election.admin.display_html_small|safe}}</b>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+
+      {% else %}
+      {% endif %}
+      {% endif %}
+    </div> <!-- span10 -->
+  </div> 
+</div>
+
+
+{% if user %}
+{% if create_p %}
+<div class="col-md-4">
+  {% if user.admin_p %}
+  <a class="btn btn-primary" style="width:100%;height:10; margin-bottom:2px;"
+    href="{% url "elections@new" %}">Criar Eleição</a>
+  {% endif %}
+  <div class="panel panel-info">
+    <div class="panel-body">
+      <b>Administração</b><br>
+      {% if elections_administered %}
+      <ul>
+        {% for election in elections_administered %}
+        <li> <a href="{% url "election@view" election.uuid %}">{{election.name}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <ul>
+        <em>nada ainda</em><br>
+      </ul>
+      {% endif %}
+      <a class="tiny button" href="{% url "elections@administered" %}"> ver todas</a>
+      <br>
+      <br>
+
+      <b>Votos Recente</b><br>
+      {% if elections_voted %}
+      <ul>
+        {% for election in elections_voted %}
+        <li><a href="{% url "election@view" election.uuid %}">{{election.name}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <ul>
+        <em>nada ainda</em><br>
+      </ul>
+      {% endif %}
+
+      <a class="tiny button" href="{% url "elections@voted" %}">ver todas</a>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<div class="col-md-4">
+  <div class="panel panel-info">
+    <div class="panel-body">
+      <br>
+      <b>Votos Recentes</b><br>
+      {% if elections_voted %}
+      <ul>
+        {% for election in elections_voted %}
+        <li><a href="{% url "election@view" election.uuid %}">{{election.name}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <ul>
+        <em>nada ainda</em><br>
+      </ul>
+      {% endif %}
+      <a class="tiny button" href="{% url "elections@voted" %}">ver todas</a>
+    </div>
+  </div>  
+</div>
+{% endif %}
+{% endif %}
+</div> <!-- end row-fluid -->
+{% endblock %}

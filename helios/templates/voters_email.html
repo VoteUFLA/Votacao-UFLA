@@ -1,0 +1,103 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Contactar Eleitores{% endblock %}
+{% block content %}
+<script>
+  var voter_id = null;
+  {% if voter %}
+  voter_id = '{{voter.voter_id}}';
+  {% endif %}
+</script>
+
+<div class="row">
+  <div class="col-xs-12 col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-envelope"></i>
+        Contactar Eleitores
+      </div>
+      <div class="panel-body">
+        <h4>{{election.name}}</h4>
+
+        {% if voter %}
+        <p> Você está enviando esse email para: <b>{{voter.name}} ({{voter.voter_id}})</b>
+        </p>
+        {% endif %}
+        <br>
+        <br>
+        <b> Escolha o tipo de email que você quer enviar:</b>
+        <br>
+        {% for template_option in templates %}
+          {% if template_option.0 == template %}
+            <b>{{template_option.1}}</b>
+          {% else %}
+            <a href="?template={{template_option.0}}&voter_id={{voter.voter_login_id}}">{{template_option.1}}</a>
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {% endfor %}
+        
+        <br />
+        <br />
+        <div class="col-md-12">
+          <pre style="margin:10px; border: 1px solid #888; padding:20px">
+            Assunto: {{default_subject}}
+                     {{default_body|safe}}
+          </pre>
+        </div>
+
+        <div class="col-md-12">
+          <p>
+            Você deve ajustar o assunto e, opcionalmente, adicionar uma mensagem personalizada no corpo do email,
+            utilizando o formulário abaixo.
+          </p>
+          <form class="form" action="" method="POST" id="email_form">
+            {{ email_form.non_field_errors }}
+            <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+            <input type="hidden" name="template" value="{{template}}" />
+            <input type="hidden" name="voter_id" value="{{voter.voter_login_id}}" />
+            
+            
+            <div class="form-group {% if email_form.subject.errors %}has-error{% endif %}">
+              <label for="id_subject">{% if email_form.fields.subject.required %}*{% endif %}Assunto (obrigatório)</label>
+              <input type="text" name="subject" class="form-control" id="id_subject" placeholder="Assunto">          
+              {{email_form.subject.errors}}
+            </div>
+
+            <div class="form-group {% if email_form.body.errors %}has-error{% endif %}">
+              <label for="body">Corpo</label><br>
+              O que você informar aqui é o que vai ser exibido no elemento BODY destacado no template acima.
+              <textarea name="body" class="form-control" id="id_body" rows="4" cols="50" placeholder="Corpo">
+              </textarea>
+          
+              {{email_form.body.errors}}
+            </div>
+
+            <div id="send_to" class="form-group {% if email_form.send_to.errors %}has-error{% endif %}">
+              <label for="send_to">Enviar para</label>
+              {{email_form.send_to}}
+              {{email_form.send_to.errors}}
+            </div>
+
+            <div class="form-group">
+              <button type="submit" id="send_button" class="btn btn-primary">Enviar</button>
+             </div>
+
+          </form>
+
+        </div>
+
+        <div id="processing">
+        </div>
+
+        <div id="done" style="display:none;">
+          Pronto, ir <a href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>.
+        </div>
+      
+        <div id="error" style="display:none;">
+          Erro ao enviar e-mail aos participantes. Verifique as configurações do servidor, certifique-se de que haja um servidor SMTP.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

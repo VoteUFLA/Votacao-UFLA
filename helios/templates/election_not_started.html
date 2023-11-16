@@ -1,0 +1,36 @@
+{% extends TEMPLATE_BASE %}
+{% load i18n %} 
+{% block content %}
+
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <div class="panel panel-info" style="text-align: center; border-color: #f80707d3 ;">
+      <div class="panel-heading"  style="background-color: #f80707d3;">
+        <h3 style="color: black;"><b>Atenção!</b></h3>    
+      </div>
+
+      <div class="panel-body" > 
+        <div id="header">         
+          <h2 class="title">Esta eleição ainda não está aberta.</h2>
+
+          
+          <br>
+        </div>
+        
+          <p>
+           Você provavelmente chegou até aqui a partir da Pré-visualização da Cédula.<br>
+           Seu voto não foi computado!
+          </p>
+          <br>
+          <br>
+          <p>
+              <a class="btn btn-success" href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>
+          </p>
+
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>
+{% endblock %}

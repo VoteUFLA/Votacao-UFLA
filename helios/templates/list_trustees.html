@@ -1,0 +1,125 @@
+{% extends "helios/templates/cryptobase.html" %}
+{% block title %}Apuradores{{election.name}}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-12 col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-calendar"></i>
+        Apuradores 
+      </div>
+      <div class="panel-body">
+       <p style="text-align:justify;">
+        {% if election.has_helios_trustee %}
+        
+            Se você não quiser cadastrar apuradores externos ao sistema, O Helios é automaticamente seu primeiro apurador
+            e irá tratar da geração de chaves e desencriptação automaticamente. Se você cadastrar apuradores adicionais, você pode remover o Helios como apurador, clicando no botão de
+            excluir da opção <b>Sistema de Votação Online da UFLA</b> na listagem de apuradores abaixo.<br />
+        
+        {% endif %}
+      </p>
+        <p style="text-align:justify;">         
+          {% if admin_p %}
+          
+          Adicione aqui as pessoas que poderão apurar o resultado da eleição. Cada uma das pessoas indicadas como apurador receberá um e-mail para que criem seu par de chaves criptográficas e que carreguem sua chave pública para esta eleição. A urna só poderá ser aberta para a eleição depois que todos os apuradores cadastrados entrarem na interface de
+          apuração e fornecerem sua chave privada. <br><br>
+          
+          <b>ATENÇÃO:</b> Se um apurador perder sua chave, a urna não poderá ser aberta e todos os votos serão
+          perdidos. <br><br>
+
+          <b>ATENÇÃO:</b> Após adicionar um apurador, você deve obrigatoriamente clicar no botão <b>Enviar e-mail</b>, para que o
+          apurador receba o e-mail informando que deve cadastrar sua chave.
+          
+          <br><br>
+        </p>
+
+        {% if not election.frozen_at %}
+        
+          <a class="btn btn-primary" id="add_trustee"
+             onclick="return(confirm('Adicionar um apurador requer um pouco mais de trabalho para contabilizar a eleição, pois é necessário que gerem pares de chaves secretas e as protejam para que a eleição posssa ser iniciada e apurada. Se você não tiver certeza do que isso significa, recomendamos clicar em Cancelar e deixar que o sistema apure a eleição para você.'));" href="{% url "election@trustees@new" election.uuid %}">Adicionar Apurador</a>
+        
+        {% if not election.has_helios_trustee %}
+        
+          <a class="btn btn-danger" href="{% url "election@trustees@add-helios" election.uuid %}">Adicionar Apuração Automática</a>
+        
+        {% endif %}
+
+        {% endif %}
+
+        {% else %}
+
+        Aqui estão listadas as pessoas habilitadas como apuradoras desta eleição.
+        {% endif %}
+
+        {% if not trustees|length %}
+
+        {% else %}
+        <br><br>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Apurador</th>
+              <th>Código de Identificação da Chave Pública:</th>
+              <th></th>
+              <th></th>
+            </tr>
+
+          </thead>
+          <tbody>
+            {% for t in trustees %}
+            <tr>
+              <td>#{{forloop.counter}}: {{t.name}}</td>
+              <td>
+
+                {% if t.public_key_hash %}
+                <strong>{{t.public_key_hash}}</strong>
+                {% else %}
+                     Nenhuma chave pública carregada ainda.
+                {% endif %}
+
+              </td>
+              <td>
+                {% if election.encrypted_tally %}
+                {% if t.decryption_factors %}
+                <span title="apuração registrada para esse apurador" class="glyphicon glyphicon-ok-sign"></span>
+                {% else %}
+                <span title="esperando pela apuração deste apurador" class="glyphicon glyphicon-info-sign"></span>
+                {% endif %}
+                {% endif %}
+              </td>
+              <td>
+
+                {% if admin_p %}
+                {% if t.secret_key %}
+                {% if not election.frozen_at %}
+                <a class="remove_helios_as_trustee" class="glyphicon glyphicon-remove"
+                   href="{% url "election@trustees@delete" election.uuid %}?uuid={{t.uuid}}">
+                  <i title="Remover Apurador" class="glyphicon glyphicon-remove"></i></a>
+                {% endif %}
+                {% else %}
+                {{t.email}}
+                {% if not election.frozen_at %}
+                <a class="remove_trustee" class="glyphicon glyphicon-remove"
+                    href="{% url "election@trustees@delete" election.uuid %}?uuid={{t.uuid}}"><i
+                    title="Remover apurador" class="glyphicon glyphicon-remove"></i></a>
+                {% endif %}
+                <a title="enviar login" class="glyphicon glyphicon-envelope send_trustee_url"
+                href="{% url "election@trustee@send-url" election.uuid t.uuid %}"></a>
+                {% endif %}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+        <br>
+        <div class="form-group">					
+					<a class="btn btn-danger" href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

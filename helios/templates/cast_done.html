@@ -1,0 +1,33 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Voto depositado!{% endblock %}
+{% block content %}
+<br>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <div class="panel panel-info">
+      <div class="panel-body" style="text-align: center; ">       
+        <br>
+        <h3> Parabéns, seu voto foi enviado com <b><u>SUCESSO!</u></b>!</h3>
+        <br>
+        <br>
+        <div class="alert alert-info" role="alert">
+          <p>
+            O número do rastreador da sua cédula é:<br>
+            <tt style="font-size: 10pt;width: 10em; word-wrap: break-word; font-weight: bold; "> {{vote_hash}}</tt>
+          </p>
+        </div>
+        </p>
+        <br><br><br>
+        {% if logout %}
+          <p><span>Você foi desconectado. <br /> Por favor, para sua segurança, feche seu navegador.</span></p>
+          <iframe width="0" height="0" border="0" frameborder="0" src="{% url "auth@logout" %}"></iframe>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2"></div>
+</div>
+{% endblock %}

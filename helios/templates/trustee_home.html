@@ -1,0 +1,51 @@
+{% extends "helios/templates/cryptobase.html" %}
+{% block content %}
+
+<div class="row"> 
+  <div class="col-xs-12 col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-info-sign"></i>
+        Chave de Apuração
+      </div>
+      <div class="panel-body">
+        <h4 class="title">Apurador {{trustee.name}}</span></h4>
+        <h4 class="title">{{election.name}}</h4>
+        <br />
+        <br />
+        <p>
+          {% if trustee.public_key_hash %}
+            Você carregou com sucesso sua chave pública.<br />
+            O código de identificação de sua chave pública é: <b> {{trustee.public_key_hash}}</b>.
+            <br />
+            <br />
+            Você Pode: <br />
+            <a class="btn btn-primary" href="{% url "election@trustee@check-sk" election.uuid trustee.uuid %}">Verificar se você tem a chave privada correta</a>
+          {% else %}
+            <a class="btn btn-primary" href="{% url "election@trustee@key-generator" election.uuid trustee.uuid %}">Configurar Chave de Apuração</a>
+          {% endif %}
+        </p>
+        <br />
+        <br />
+        <p>
+          {% if election.encrypted_tally %}
+            {% if trustee.decryption_factors %}
+              Você carregou com sucesso sua desencriptação.
+            {% else %}
+              A apuração criptografada dessa eleição está pronta.
+          <br />
+          <br />
+          <a class="btn btn-primary" href="{% url "election@trustee@decrypt-and-prove" election.uuid trustee.uuid %}">Decifrar com sua chave</a>
+          {% endif %}
+          {% else %}
+            <br>ATENÇÃO: </b> Quando a apuração for computada, você vai ser solicitado(a) a retornar para essa página e
+            informar sua chave secreta para poder desencriptar a apuração.<br>
+            Você deve manter o email que você recebeu com o link para a sua página de apurador, o qual contém as
+            credenciais necessárias para retornar a essa página.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

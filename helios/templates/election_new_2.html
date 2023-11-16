@@ -1,0 +1,91 @@
+{% extends "helios/templates/cryptobase.html" %}
+{% block content %}
+
+<script language="javascript">
+var SECRET_KEY;
+
+function before_create() {
+{% ifequal election_type "one" %}
+    return confirm('Você se certificou de copiar a chave privada para um local seguro? Depois de clicar em OK, o Sistema não conseguirá recuperar a chave secreta sem a sua ajuda!');
+{% else %}
+    return true;
+{% endifequal %}
+}
+
+function generate_keypair() {
+    ELGAMAL_PARAMS = ElGamal.Params.fromJSONObject({{eg_params_json|safe}});
+
+    $('#generate_button').hide();
+    
+    try {
+        SECRET_KEY = ELGAMAL_PARAMS.generate();
+    } catch (e) {
+        alert(e);
+    }
+
+    $('#pk').val(jQuery.toJSON(SECRET_KEY.pk));
+    
+{% ifequal election_type "one" %}
+    $('#sk_textarea').val(jQuery.toJSON(SECRET_KEY));
+    $('#sk_form').show();
+{% else %}
+{% ifequal election_type "helios" %}
+    $('#sk').val(jQuery.toJSON(SECRET_KEY));
+{% endifequal %}
+{% endifequal %}
+
+    $('#submit').show();
+}
+
+$(document).ready(function() {
+{% ifnotequal election_type "multiple" %}
+    $('#submit').hide();
+{% endifnotequal %}
+    $('#sk_form').hide();
+});
+</script>
+
+  <h2 class="title">Criar uma Nova Eleição: {{name}}</h2>
+{% ifequal election_type "helios" %}
+  <b>Eleição gerenciada pelo Helios</b>.
+{% else %}
+{% ifequal election_type "one" %}
+  <b>Eleição gerenciada por você, o único administrador</b>.
+{% else %}
+<b>Eleição gerenciada por múltiplos apuradores</b>.
+{% endifequal %}
+{% endifequal %}
+  <form class="prettyform" action="{% url "helios.views.election_new_3" %}" method="POST" id="create_election_form" onsubmit="return before_create();">
+      <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+      <input type="hidden" name="name" value="{{name}}" />
+      <input type="hidden" name="public_key" id="pk" value="" />
+      <input type="hidden" name="private_key" id="sk" value="" /><br />
+
+{% ifnotequal election_type "multiple" %}
+  <label for="generate_key">&nbsp;</label><button onclick="generate_keypair(); return false;" id="generate_button">Gerar Chaves da Eleição</button>
+{% else %}
+<div id="trustees">
+<h3>Trustees (up to 5)</h3>
+<label for="">&nbsp;</label> <input type="text" name="trustee" /><br />
+<label for="">&nbsp;</label> <input type="text" name="trustee" /><br />
+<label for="">&nbsp;</label> <input type="text" name="trustee" /><br />
+<label for="">&nbsp;</label> <input type="text" name="trustee" /><br />
+<label for="">&nbsp;</label> <input type="text" name="trustee" /><br />
+</div>
+{% endifnotequal %}
+<br /><br />
+<label for="">&nbsp;</label>  <input type="submit" value="create" id="submit" />
+  </form>
+  <br /><br />
+{% ifequal election_type "one" %}
+  <form style="padding-left: 200px;" id="sk_form" onsubmit="return false;">
+      <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+      Sua Chave Secreta da Eleição:<br />
+      <label for="">&nbsp;</label>
+      <textarea id="sk_textarea" cols="60" rows="5">
+      </textarea><br />
+      (Você precisa copiar e colar esta chave e mantê-la em segurança,<br />
+      do contrário, você não vai conseguir apurar a sua eleição.)
+  </form>
+{% endifequal %}
+{% endblock %}

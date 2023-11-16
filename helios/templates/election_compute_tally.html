@@ -1,0 +1,46 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Iniciar a apuração dos votos{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class=" col-md-2"></div>
+  <div class="col-xs-12 col-md-8">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-cog"></i>
+        Apurar Votos
+      </div>
+      <div class="panel-body">
+        
+        <div id="instructions">
+          {% if election.num_cast_votes %}
+          <p>
+            Você está prestes a computar a apuração criptografada da <b>{{election.name}}</b>.          
+            Depois que fizer isso, os eleitores não conseguirão mais votar.           
+          </p>
+          <br>
+          <form id="begin_tally" method="post" action="" class="pretty">
+            <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+            <input class="btn btn-primary" type="submit" value="Iniciar Apuração" />
+            <button class="btn btn-danger" onclick="document.location='{% url "election@view" election.uuid %}'; return false;">Deixar para depois</button>
+          </form>
+          {% else %}
+          <p>
+            
+            <b>ATENÇÃO: </b> Nenhum voto foi depositado nessa eleição. Ao menos um voto precisa ser depositado antes de computar a apuração.
+            <br /><br />
+            
+            <div class="form-group">           
+            <a class="btn btn-danger"
+            href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>
+          </div>
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" col-md-2"></div>
+</div>
+<br /><br />
+{% endblock %}

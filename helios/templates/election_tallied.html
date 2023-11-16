@@ -1,0 +1,31 @@
+{% extends TEMPLATE_BASE %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <div class="panel panel-info" style="text-align: center; border-color: #f80707d3 ;">
+      <div class="panel-heading" style="background-color: #f80707d3;">
+        <h3 style="color: black;"><b>Atenção!</b></h3>
+      </div>
+
+      <div class="panel-body">
+        <div id="header">
+          <h4> {{election.name}}</h4>
+          <br>
+        </div>
+
+        <p>
+          Essa eleição já foi finalizada, você não pode mais depositar voto.
+        </p>
+        <br>
+        <p>
+          <a class="btn btn-primary" href="{% url "election@view" election.uuid %}"> Visualizar Apuração da Eleição</a>
+        </p>
+
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>
+{% endblock %}

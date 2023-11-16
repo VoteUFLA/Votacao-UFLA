@@ -1,0 +1,35 @@
+{% extends TEMPLATE_BASE %}
+{% block content %}
+
+<div class="col-md-12">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <i class="glyphicon glyphicon-cog"></i>
+      Eleições que você administra 
+    </div>
+
+    <div class="panel-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Eleição</th>
+            <th>Eleitores / votos depositados</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for election in elections %}
+          <tr>
+            <td><b><a href="{% url "election@view" election.uuid %}">{{election.name}}</a></b></td>
+            <td>{{election.num_voters}} voters / {{election.num_cast_votes}} cast votes </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <div class="form-group">        
+        <a class="btn btn-danger" href="/"> Voltar </a>
+      </div>
+    </div>    
+  </div>
+</div>
+{% endblock %}

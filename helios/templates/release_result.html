@@ -1,0 +1,42 @@
+{% extends TEMPLATE_BASE %}
+{% load i18n %}
+{% block title %} Liberar o resultado &mdash; {{election.name}}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-6">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-exclamation-sign"></i>
+        Liberar Resultado
+      </div>
+      <div class="panel-body">
+        <br>
+        <p>
+          Você está prestes a liberar o resultado para eleição {{election.name}}
+        </p>
+        <div class="row">
+          <div class="col-md-12">
+            <form class="form" method="POST" action="">
+              <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+              
+                <input type="checkbox" name="send_email" value="send_email" />
+                  <strong> Enviar email para os eleitores avisando resultado. </strong>
+              
+              <br>
+              <br>
+              <br>
+              <div class="form-group">
+                <button id="release_result" class="btn btn-primary">Liberar Resultado</button>
+                <a class="btn btn-danger" href="{% url "election@view" election.uuid %}">Cancelar</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

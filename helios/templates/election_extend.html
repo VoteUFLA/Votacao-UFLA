@@ -1,0 +1,37 @@
+{% extends TEMPLATE_BASE %}
+{% block content %}
+{% if error %}
+  <div style="color: red;">{{error}}</div>
+{% endif %}
+
+
+<div class="row">
+  <div class="col-xs-12 col-md-6">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-calendar"></i>
+        Estender Votação
+      </div>
+      <div class="panel-body">
+        <form role="form" action="" method="POST" id="edit_election_form">
+          <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+          {% for field in election_form.visible_fields %}
+          <p class="help-block">{{ field.help_text }}</p>
+          <div class="form-group {% if field.errors %}has-error{% endif %}">
+            {{ field.errors }}
+            <label for="{{ field.label }}">{{ field.label }}</label><br>
+            {{ field }}
+            
+          </div>
+          {% endfor %}
+          <br>
+          <div class="form-group">
+            <button id="update_button" type="submit" class="btn btn-primary">Estender Votação</button>
+            <button class="btn btn-danger" href="{% url "election@view" election.uuid %}">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

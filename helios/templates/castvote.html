@@ -1,0 +1,37 @@
+{% extends TEMPLATE_BASE %}
+{% block title %} {{election.name}}{% endblock %}
+{% block content %}
+<br>
+<br>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div class="panel panel-info" style="text-align: center; ">
+          
+        <div class="panel-body" > 
+            <h2 class="title">Voto(s) Depositado(s) por {{the_voter.alias}}</h2>
+            <br>
+            depositado em <a href="{% url "election@view" election.uuid %}">{{election.name}}</a><br />
+            Código de Identificação:<b><tt>{{cast_vote.vote_hash}}</tt></b><br />
+            por <b><u>
+                    {% if the_voter.alias %}
+                      {{the_voter.alias}}
+                    {% else %}
+                      {{the_voter.name}}
+                    {% endif %}
+                </u></b>
+            <br />
+            <br /> 
+            <a href="#" onclick="$('#castvote_content').slideToggle(250); return false;">detalhes</a><br /><br />
+            <div style="display:none;" id="castvote_content">
+                <textarea cols="100" rows="10">
+                    {{vote_content}}
+                </textarea>
+            </div>
+           <br /><br />
+        </div>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+{% endblock %}

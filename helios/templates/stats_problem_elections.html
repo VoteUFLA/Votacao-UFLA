@@ -1,0 +1,38 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Estatísticas{% endblock %}
+{% block content %}
+
+<div class="col-xs-12 col-md-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <i class="glyphicon glyphicon-cog"></i>
+            Eleições probmemáticas
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                Desbloqueada por mais de um dia.
+                <thead>
+                    <tr>
+                        <th>Eleição</th>
+                        <th>Eleitores</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for election in elections %}
+                    <tr>
+                        <td><b><a
+                                    href="{% url "election@view" election.uuid %}">{{election.name}}</a></b>
+                        </td>
+                        <td>{{election.num_voters}} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <div class="form-group">
+               <a class="btn btn-danger" href="/helios/stats/"> Voltar </a>
+            </div>         
+        </div>
+    </div>
+</div>
+{% endblock %}

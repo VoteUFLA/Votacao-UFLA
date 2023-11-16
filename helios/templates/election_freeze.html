@@ -1,0 +1,73 @@
+{% extends TEMPLATE_BASE %}
+{% load i18n %}
+{% block content %}
+
+
+<div class="row">
+    <div class=" col-md-2"></div>
+    <div class="col-xs-12 col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <i class="glyphicon glyphicon-exclamation-sign"></i>
+                Congelar Cédula
+            </div>
+            <div class="panel-body" style="text-align: justify;">
+                
+                <br>
+                <p>
+                   
+                        <b>ATENÇÃO: </b> Assim que a cédula for congelada, nenhuma informação da <b>{{election.name}}</b> poderá ser
+                        modificada. O que inclui: Questões; Apuradores e Detalhes da Eleição.
+                    
+                </p>
+
+                <p>
+                    {% if election.openreg %}
+                    
+                    O registro para sua eleição está <b> aberto </b> no momento,
+                    o que significa que qualquer pessoa pode votar, 
+                    mesmo após o congelamento da votação.
+                    
+                    {% else %}
+                    
+                    O registro para sua eleição está <b>fechado</b> no momento, 
+                    o que significa que apenas os eleitores designados poderão votar.
+                    Como administrador, você ainda poderá modificar essa lista de eleitores à medida que a eleição progride.
+                                        
+                    
+                    {% endif %}
+                </p>
+
+                {% if helios.VOTERS_EMAIL %}
+                <p>
+                    Você precisa congelar a cédula antes de poder contactar os eleitores.
+                </p>
+                {% endif %}
+
+                {% if issues_p %}
+                <p> 
+                    Antes de congelar a eleição, você precisará:
+                <ul>
+                    {% for issue in issues %}
+                    <li>{{issue.action}}</li>
+                    {% endfor %}
+                </ul>
+                <a class="btn btn-primary" href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>
+                </p>
+                {% else %}
+                <form method="post" action="">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+
+                    <br>
+                    <br>
+                    <button class="btn btn-primary">Congelar a Cédula</button>
+                    <button class="btn btn-danger" onclick="document.location='{% url "election@view" election.uuid %}'; return false;">Agora Não</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class=" col-md-2"></div>
+</div>
+
+{% endblock %}

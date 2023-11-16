@@ -1,0 +1,66 @@
+{% extends TEMPLATE_BASE %} 
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <i class="glyphicon glyphicon-upload"></i>
+        Carregar Arquivo de Eleitores
+      </div>
+      <div class="panel-body">
+        <br>
+        Só poderão votar na eleição <b>{{election.name}}</b> os eleitores que forem carregados por meio de um arquivo CSV. Cada linha do arquivo do CSV representa um único eleitor e é composta pelos seguintes campos:
+       <br>
+
+        <form method="post" action="" id="upload_form" enctype="multipart/form-data">
+          <br>
+          <pre>
+            tipo,&lt;unique_id&gt;,&lt;email&gt,&lt;full name&gt;
+          </pre>
+
+          <p>
+            Por Exemplo:
+          </p>
+
+          <pre>
+            ldap,eleitor1,eleitor1@ufla.br,Nome Completo Eleitor 1
+            ldap,eleitor2,eleitor2@ufla.br,Nome Completo Eleitor 2
+            ldap,eleitor3,eleitor3@ufla.br,Nome Completo Eleitor 3
+            ...
+            ATENÇÃO: O arquivo deve ter todos os eleitores.
+        </pre>
+        <p>
+            ou
+        </p>
+        <pre>
+          github,&lt;username&gt;
+        </pre>
+
+
+          {% if error %}
+          <div style="color: red;">{{error}}</div>
+          {% endif %}
+
+          <input type="hidden" name="csrf_token" value="{{csrf_token}}" />
+          <input class="btn btn-primary" type="file" name="voters_file" style="max-width: 100%;"/>
+          
+          <br>
+          <div class="col-xs-12 col-md-12">
+            <input class="btn btn-primary" type="submit" value="Carregar Eleitores" />
+            <a class="btn btn-danger" href="{% url "election@view" election.uuid %}">Voltar para Eleição</a>
+          </div>
+        </form>
+
+        <div id="processing">
+        </div>
+
+        <div id="done" style="display:none;">
+          Ok, upload completo.<br />
+          Agora você pode <a href="./manage">visualizar a lista de eleitores</a>.
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js" lang="{% firstof settings.LANGUAGE_CODE 'en' %}">
+ <!--<![endif]-->
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>{% block title %}{% endblock %}</title>
+  
+  <link rel="stylesheet" href="/static/foundation/css/foundation.css">
+  <link rel="stylesheet" href="/static/foundation-tweaks.css">
+  <link rel="stylesheet" href="/static/main.css"> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+{% if settings.DEBUG %}  
+  <script src="/static/foundation/js/vendor/custom.modernizr.js"></script>
+  <script language="javascript" src="/static/helios/js/jquery-1.4.2.min.js"></script>
+  <script language="javascript" src="/static/helios/js/jquery-ui-1.8.1.custom.min.js"></script>
+  <script language="javascript" src="/static/helios/js/jqsplitdatetime.js"></script>
+  <script language="javascript" src="/static/helios/helios/jquery.json.min.js"></script>
+  <script language="javascript" src="/static/foundation/js/foundation.min.js"></script>
+  
+
+{% else %}
+<script language="javascript" src="/static/20140302-helios-combined.js"></script>
+{% endif %}
+  
+  {% block js %}
+  {% endblock %}
+  
+  {% block extra-head %}{% endblock %}
+
+  <style>
+    body,
+    input {
+      font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+    }
+
+    code,
+    kbd,
+    pre {
+      font-family: "Roboto Mono", "Courier New", Courier, monospace
+    }
+
+    @media screen and (min-width: 681px) {
+      .resp {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .hide-when-narrow {
+        display: none;
+      }
+    }
+  </style> 
+
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid" >
+      <div class="row" style="background-color: #0a6a1c; display: flex; align-items: center; text-align: left; ">
+        <div class="col-sm-2" >
+          <a title="Portal da UFLA" href="https://ufla.br"> 
+            <img class="img-responsive logo" width="177" Sheight="65" src="/static/logo-ufla.png" alt="Logo UFLA" />
+          </a>
+        </div>
+        <div class="col-sm-10 hide-when-narrow" style="padding-left: 5px; color: #FFFFFF;">
+          <h1 style="line-height: 0.3;"> <b>Sistema de Votação Eletrônica</b></h1>
+          <span style="font-size: 1em; "> UNIVERSIDADE FEDERAL DE LAVRAS</span>
+        </div>
+      </div>
+  
+      <div class="row top-bar-menu" style="background-color: #00420c;">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-bar-menu" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse navbar-right" id="top-bar-menu">
+          <ul class="nav navbar-nav">
+            <li>
+              <a class="navbar-brand " style="color:#FFFFFF; font-size: 14px; margin-right: 12px; " href="/"><b>Início</b></a>
+            </li>
+
+            {% if user and user.admin_p %}
+              <li><a class="navbar-brand " style="color:#FFFFFF; font-size: 14px; margin-right: 12px; " href="{% url "stats@home" %}"><b>Admin</b></a></li>              
+            {% endif %}       
+            <li><a class="navbar-brand" style="color:#FFFFFF; font-size: 14px;" href="https://glpi.ufla.br/plugins/formcreator/front/formdisplay.php?id=9" target="_blank"><b>Suporte</b></a></li>
+            {% if user %}          
+            <li><a class="navbar-brand " style="color:#FFFFFF; font-size: 14px; margin-right: 12px;" href="{% url "auth@logout" %}?return_url={{CURRENT_URL}}"><b>Sair</b></a></li>                  
+            {% else %}
+            <li><a class="navbar-brand " style="color:#FFFFFF; font-size: 14px; margin-right: 12px;" href="https://teste-vote.ufla.br/auth/ldap/login"><b>Conectar</b></a></li> 
+            {% endif %}
+         </ul>
+       </div>
+      </div>   
+    </div>    
+  </nav>
+  
+  <div class="container">
+    {% block content %}
+    {% block subcontent %}
+    {% endblock subcontent %}
+    {% endblock %}
+  </div>
+
+  <script>
+    $(document).foundation();
+  </script>  
+  
+</body>
+
+{% if user %}
+      <div id="footer">
+      <div class="container" id="container-footer">
+      {% block footer %}
+          Conectado como: <b>{{user.pretty_name|safe}}</b>          
+          <br clear="right" />
+      {% endblock footer%}
+      </div>
+      </div>
+{% endif %}       
+
+</html>

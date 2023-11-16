@@ -1,0 +1,62 @@
+{% extends TEMPLATE_BASE %}
+{% block title %}Estatísticas{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-12">
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<i class="glyphicon glyphicon-cog"></i>
+			Eleições
+		</div>
+
+		<br>
+		<p>
+		<form method="get" action="{% url "stats@elections" %}">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" placeholder="Buscar Eleição" name="q" value="{{q}}" />
+			<input class="small button" type="submit" value="Buscar" />
+		</form>
+		</p>
+		<br>
+
+		<div class="panel-body">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Eleição</th>
+						<th>Admin</th>
+						<th>Eleitores / Votos Depositados</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for election in elections %}
+					<tr>
+						<td>
+							<b><a
+								href="{% url "election@view" election.uuid %}">{{election.name}}</a></b>
+						</td>
+						<td><a href="mailto:{{election.admin.info.email}}">{{election.admin.pretty_name}}</a> </td>
+						<td>{{election.num_voters}} / {{election.num_cast_votes}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br>
+			<p>
+				{% if elections_page.has_previous %}
+				<a href="?page={{elections_page.previous_page_number}}&limit={{limit}}&q={{q|urlencode}}">Anterior {{limit}}</a> &nbsp;&nbsp;
+				{% endif %}
+
+				Eleição {{elections_page.start_index}} - {{elections_page.end_index}} (de	{{total_elections}})
+
+				{% if elections_page.has_next %}
+				<a href="?page={{elections_page.next_page_number}}&limit={{limit}}&q={{q|urlencode}}">Próximo {{limit}}</a>
+				&nbsp;&nbsp;
+				{% endif %}
+			</p>
+
+			<div class="form-group">
+				<a class="btn btn-danger" href="/helios/stats/"> Voltar </a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

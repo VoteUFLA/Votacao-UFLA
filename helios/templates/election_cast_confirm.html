@@ -1,0 +1,115 @@
+
+{% extends TEMPLATE_BASE %}
+{% block title %}Confirmar Voto{% endblock %}
+
+{% block content %}
+<script language="javascript">
+  $(document).ready(function () {
+    $('#waiting_div').hide();
+  });
+
+  function show_waiting() {
+    $('#all_forms').hide();
+    $('#waiting_div').show();
+  }
+
+  // FIXME: set this to false once it's clear how to set it back to true
+  // so that it's not easy to forget to cast a ballot
+  var ready_to_unload = true;
+
+  window.onbeforeunload = function (evt) {
+    if (ready_to_unload)
+      return;
+
+    if (typeof evt == 'undefined') {
+      evt = window.event;
+    }
+
+    //var message = "You have not yet cast your ballot! Make sure to complete the voting process if you want your vote to count.";
+    var message = "Você ainda NÃO DEPOSITOU sua cédula na urna! Se você quiser que seu voto seja considerado, então complete todo o processo";
+
+    if (evt) {
+      evt.returnValue = message;
+    }
+
+    return message;
+  };
+
+</script>
+<br>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <div class="panel panel-info" style="text-align: center;">
+        <div class="panel-body">
+        <h4>{{election.name}}</h4>
+        <br>        
+        <div class="alert alert-warning" role="alert">
+          A sua cédula <b><u>ainda não foi depositada</u></b> na urna.
+        </div>
+
+        <div id="waiting_div">
+          Depositando sua cédula<br />
+          <img src="/static/helios/loading.gif" />
+        </div>
+
+        <div id="all_forms">
+          {% if voter %}
+            {% include "_castconfirm_docast.html" %}
+          {% else %}
+            {% if show_password %} 
+              {% if user %}
+              {% endif %}            
+              {% with cast_ballot="1" %}
+                {% include "_castconfirm_password.html" %}
+              {% endwith %}
+            {% else %}
+              {% if user %}
+                <div class="alert alert-danger" role="alert">
+                  {% if election.openreg %}            
+                    <b>Desculpe, você <em><u>não está apto</u></em> para esta eleição.</b><br />
+                  {% else %}
+                    <b>Desculpe, você <em>não está registrado</em> para essa eleição, e o registro está fechado.</b><br />
+                  {% endif %}
+                </div>
+                <p>
+                <a class="btn-primary btn-lg pull-right"
+                    href="{% url "election@view" election.uuid %}">Retornar para a página da eleição</a>
+                </p>
+              {% else %}
+                 <p>
+                    
+                  Para que sua cédula seja realmente depositada na urna, conecte-se com seu usuário e senha institucional<br>
+                  Assim podemos verificar se você é um <b>eleitor válido</b> nessa eleição.<br /><br />
+                  
+                <!-- {% if election.openreg %}
+                    {% if election.eligibility %}
+                    {% else %}
+                      Esta eleição está aberta para <em>todo mundo</em>, então conecte com sua conta preferida.
+                    {% endif %}
+                  {% else %}
+                    Essa eleição está aberta para <em>eleitores registrados</em>, portanto conecte-se com a mesma conta com a qual você se registrou.
+                  {% endif %}--> 
+                  </p>
+
+                  {{login_box|safe}}
+
+                  <br />           
+                  Não se preocupe, lembraremos das suas escolhas.         
+             {% endif %}
+          {% endif %}
+
+          {# this closes the IF ELSE of this being password_only #}
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2"></div>
+</div>
+
+<br>
+{% endblock %}

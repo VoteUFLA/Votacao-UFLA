@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="pt-br">
+<title>{{default_from_name|safe}}</title>
+<head>
+    <meta charset="utf-8">
+</head>
+    <body>
+        <p><strong>{{voter.name}}</strong>,
+        <p>Seu voto foi depositado com sucesso!</p><br>
+        <p>O seu voto foi registrado com o seguinte código de confirmação:<br>
+        <strong>
+            {{cast_vote.vote_hash}}
+        </strong>        
+        <br><br>
+        O seu voto está guardado em: 
+        <strong>
+            {{cast_vote_url}}
+        </strong>
+        <br>
+        
+{% if election.use_voter_aliases %}
+    <p> O seu pseudônimo de eleitor é: <strong>{{voter.alias}} </strong></p>
+{% endif %}    
+    <p>O resultado da eleição será divulgado em horário e local conforme Edital.</p>
+    <br>
+--
+<br>
+<font style="" size="2" face="verdana, sans-serif"><b style="">Universidade Federal de Lavras - UFLA</b></font><br>
+<font style="" size="2" face="verdana, sans-serif">Lavras, Minas Gerais - Cep: 37200-900 </font><br>
+<u><a href="https://ufla.br" target="_blank" style=""><font style="" size="2" face="verdana, sans-serif">https://ufla.br/</font></a></u>
+</body>
+</html>

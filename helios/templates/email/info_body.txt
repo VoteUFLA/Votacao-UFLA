@@ -1,0 +1,15 @@
+<p>
+Caro (a) {{voter.name}},
+</p>
+
+<p>{{custom_message|safe|linebreaksbr}}</p>
+<br>
+<p>
+Você pode acessar a eleição através do link {{election_vote_url}}
+</p>
+<br>
+--
+<br>
+<font style="" size="2" face="verdana, sans-serif"><b style="">Universidade Federal de Lavras - UFLA</b></font><br>
+<font style="" size="2" face="verdana, sans-serif">Lavras, Minas Gerais - Cep: 37200-900 </font><br>
+<u><a href="https://ufla.br" target="_blank" style=""><font style="" size="2" face="verdana, sans-serif">https://ufla.br/</font></a></u>

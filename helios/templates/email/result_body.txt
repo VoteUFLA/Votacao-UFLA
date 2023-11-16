@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-br">
+<title>{{default_from_name|safe|linebreaksbr}}</title>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+
+<p>Caro (a) {{voter.name}},</p>
+
+<br>
+<br>
+{{custom_message|safe|linebreaksbr}}
+<br>
+<br>
+A apuração da <strong>{{election.name}}</strong> foi realizada e liberada:<br>
+{{election_url}}
+<br>
+<br>
+
+{% if voter.vote_hash %} 
+O código de rastreamento de sua cédula nessa eleição foi:<br>
+<strong>{{voter.vote_hash}}</strong>
+<br>
+<br>
+
+
+{% else %}
+<p>
+Parece que você não votou nessa eleição. Se você acha que votou, por favor, entre em contato.
+</p>
+{% endif %}
+<br>
+--
+<br>
+<font style="" size="2" face="verdana, sans-serif"><b style="">Universidade Federal de Lavras - UFLA</b></font><br>
+<font style="" size="2" face="verdana, sans-serif">Lavras, Minas Gerais - Cep: 37200-900 </font><br>
+<u><a href="https://ufla.br" target="_blank" style=""><font style="" size="2" face="verdana, sans-serif">https://ufla.br/</font></a></u>
+
+
+</body>
+</html>
