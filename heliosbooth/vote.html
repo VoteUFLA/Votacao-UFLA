@@ -329,6 +329,11 @@
             alert('Você precisa escolher pelo menos ' + BOOTH.election.questions[question_num].min + ' resposta(s).');
             return false;
           }
+          if (BOOTH.ballot.answers[question_num].length > BOOTH.election.questions[question_num].max) {
+            alert('Você pode escolher no máximo ' + BOOTH.election.questions[question_num].max + ' resposta(s).');
+            return false;
+          }
+
 
           // if we need to launch the worker, let's do it
           if (!BOOTH.synchronous) {
@@ -449,7 +454,7 @@
             });
             $('#warning_box').html("");
             if (BOOTH.election.questions[question_num].max != null && (BOOTH.ballot.answers[question_num].length < BOOTH.election.questions[question_num].max)) {
-              $('#warning_box').html("Você pode selecionar até " + BOOTH.election.questions[question_num].max + " choices total.");
+              $('#warning_box').html("Você pode selecionar até " + BOOTH.election.questions[question_num].max + " resposta(s).");
             }
           }
         };
@@ -457,7 +462,6 @@
         BOOTH.show_processing_before = function (str_to_execute) {
           $('#processing_div').html("<h3 align='center'>Processing...</h3>");
           BOOTH.show($('#processing_div'));
-
           // add a timeout so browsers like Safari actually display the processing message
           setTimeout(str_to_execute, 250);
         };
