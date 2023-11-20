@@ -15,9 +15,7 @@
 <p><strong>Seu ID de eleitor:</strong> {{voter.voter_login_id}}
 <br><strong>Sua senha para votar nessa eleição:</strong> {{voter.voter_password}}</p>
 {% else %}
-<p>
-Autentique-se com sua conta de usuário {{voter.voter_type}}.
-</p>
+
 {% endifequal %}
 <br><br>
 --
